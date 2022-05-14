@@ -1,2 +1,3 @@
-# wp-map-project
-A simple Wordpress project for TelebidPro
+# Random map coordinates
+
+A simple Wordpress plugin that provides a map with randomly generated coordinates.
