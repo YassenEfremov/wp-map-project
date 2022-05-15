@@ -1,18 +1,14 @@
-// Doesn't work, but something similar may be used
-
-jQuery(document).ready(function() {
-	jQuery("#gen-new-coords").click(function () {
-		console.log('The function is hooked up');
-		jQuery.ajax({
+jQuery(document).ready(function($) {
+	$("#gen-new-coords").click(function() {
+		$.ajax({
 			type: "POST",
-			url: "/wp-admin/admin-ajax.php",
+			url: ajax_object.ajax_url,
 			data: {
-				action: 'generate_new_coordinates',
-				// add your parameters here
-				message_id: $('#gen-new-coords').val()
+				action: 'generate_new_coordinates'
 			},
-			success: function (output) {
-				console.log(output);
+			success: function(response) {
+				location.reload();		// This reload would not have been necessary if the map supported AJAX
+				console.log(response);
 			}
 		});
 	});

@@ -9,7 +9,7 @@
  */
 
 
-define("NUMBER_OF_COORDS", 5);
+define("NUMBER_OF_COORDS", 20);
 
 // v v v This code could be useful v v v
 
@@ -37,19 +37,7 @@ define("NUMBER_OF_COORDS", 5);
 //	));
 
 
-add_action( 'wp_head', function () { ?>
-<script>
-
-	// for testing
-	function test() {
-		console.log("ASDASDASDASD");
-	}
-
-</script>
-<?php } );
-
-
-if(isset($_POST['gen-new-coords'])) {
+function generate_new_coordinates() {
 
 	global $wpdb;
 	$table_name = $wpdb->prefix.'wpgmza';
@@ -104,3 +92,12 @@ if(isset($_POST['gen-new-coords'])) {
 	$prepared_query = $wpdb->prepare($query);
 	$wpdb->query($prepared_query);
 }
+
+function wp_enqueue_gen_new_coords() {
+	wp_enqueue_script('generate_new_coordinates', plugin_dir_url(__FILE__) . '/js/generate-new-coordinates.js', array('jquery'));
+	wp_localize_script('generate_new_coordinates', 'ajax_object', array('ajax_url' => admin_url('admin-ajax.php')));
+}
+add_action('wp_enqueue_scripts', 'wp_enqueue_gen_new_coords');
+
+add_action('wp_ajax_nopriv_generate_new_coordinates', 'generate_new_coordinates');
+add_action('wp_ajax_generate_new_coordinates', 'generate_new_coordinates');
