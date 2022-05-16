@@ -9,8 +9,6 @@
  */
 
 
-define("NUMBER_OF_COORDS", 20);
-
 // v v v This code could be useful v v v
 
 //	$wpdb->insert($table_name, array(
@@ -48,13 +46,15 @@ function generate_new_coordinates() {
 	// The beginning of the SQL query, specifies the colums to insert into
 	$query = "INSERT INTO $table_name (map_id, address, description, pic, link, icon, lat, lng, anim, title, infoopen, category, approved, retina, type, did, sticky, other_data, latlng) VALUES ";
 	
+	$number_of_coords = $_POST['number_of_coords'];
+
 
 	/* ----- METHOD 1: Use an external API to get the random coordinates ----- */
 	
 	$curl = curl_init();
 
 	// Set the URL and return type
-	curl_setopt($curl, CURLOPT_URL, 'https://www.random.org/decimal-fractions/?num=' . 2 * NUMBER_OF_COORDS . '&dec=10&col=2&format=plain&rnd=new');
+	curl_setopt($curl, CURLOPT_URL, 'https://www.random.org/decimal-fractions/?num=' . 2 * $number_of_coords . '&dec=10&col=2&format=plain&rnd=new');
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
 	$result_string = curl_exec($curl);
@@ -65,26 +65,26 @@ function generate_new_coordinates() {
 	$result = explode(PHP_EOL, $result_string);
 	
 	// Add the values to the SQL query
-	for($i = 0; $i < NUMBER_OF_COORDS; $i++) {
+	for($i = 0; $i < $number_of_coords; $i++) {
 		$random_lat = 180 * explode("\t", $result[$i])[0] - 90;
 		$random_lng = 360 * explode("\t", $result[$i])[1] - 180;
 
 		$query .= "(1, 'Random', '', '', '', '', '$random_lat', '$random_lng', '0', '', '0', '', 1, 0, 0, '', 0, '', POINT($random_lat, $random_lng))";
-		if($i + 1 != NUMBER_OF_COORDS) $query .= ', ';	// Don't add a comma after the last values
+		if($i + 1 != $number_of_coords) $query .= ', ';	// Don't add a comma after the last values
 	}
 
 
 	/* ----- METHOD 2: Use the built-in PHP rand methods to generate the random coordinates ----- */
 	
-	// Generate NUMBER_OF_COORDS markers, each with random coordinates, and add the values to the SQL query
+	// Generate $number_of_coords markers, each with random coordinates, and add the values to the SQL query
 
 	/*
-	for($i = 0; $i < NUMBER_OF_COORDS; $i++) {
+	for($i = 0; $i < $number_of_coords; $i++) {
 		$random_lat = rand(-900000000, 900000000) / 10000000;
 		$random_lng = rand(-1800000000, 1800000000) / 10000000;
 
 		$query .= "(1, 'Random', '', '', '', '', '$random_lat', '$random_lng', '0', '', '0', '', 1, 0, 0, '', 0, '', POINT($random_lat, $random_lng))";
-		if($i + 1 != NUMBER_OF_COORDS) $query .= ', ';	// Don't add a comma after the last values
+		if($i + 1 != $number_of_coords) $query .= ', ';	// Don't add a comma after the last values
 	}
 	*/
 
